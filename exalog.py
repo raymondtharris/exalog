@@ -1,5 +1,9 @@
 from pynput import keyboard
+from PIL import ImageGrab
+from datetime import datetime
 
+#bbox = (0, 0, screen_width, screen_height)
+currentCopy = ''
 activePressedKeys = list()
 keyboardShortcuts = {
     'copy':[keyboard.Key.cmd, 'c'],
@@ -22,10 +26,20 @@ def onPress(key):
         if  activePressedKeys == shortcutKeys:
             if shortcut == 'copy':
                 print('copy detected')
+                global currentCopy 
+                currentCopy = datetime.now().strftime("%H:%M:%S")
+                im = ImageGrab.grab(None)
+                im.save('copy - '+currentCopy+' - screenshot.png')
+                im.close()
             elif shortcut == 'paste':
-                print('paste detected')            
+                print('paste detected')
+                im = ImageGrab.grab(None)
+                im.save('paste - ' + datetime.now().strftime("%H:%M:%S") +' from copy - '+currentCopy+' - screenshot.png')
+                im.close()            
         #else:
         #    print('')    
+        
+        
         
             
 def onRelease(key):
