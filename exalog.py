@@ -48,12 +48,17 @@ def onPress(key):
                     newLog['Keys']="cmd + v"
                     newLog['Note'] = 'Paste Command'
                     newLog['Media'] = 'paste - ' + datetime.now().strftime("%H:%M:%S") +' from copy - '+currentCopy+' - screenshot.png'
-        print(activePressedKeys)
+        #print(activePressedKeys)
     
-    else:
-        print(key)
-    global df    
-    df = pd.concat([df,pd.DataFrame([newLog])], join='inner', ignore_index=True)
+    #else:
+        #print(key)
+
+    global df
+    #print('OG')
+    #print(df)    
+    df = pd.concat([df,pd.DataFrame.from_dict(newLog)])
+    #print('Combined')
+    #print(df)
     #If dataframe has more than 30 items write to file
     if len(df.index) >30:
         writeFile()
@@ -61,7 +66,9 @@ def onPress(key):
 
 
 def writeFile():
+    global df
     df.to_csv(datetime.now().strftime("%Y-%m-%d") + '-log.csv', mode='a', index=False, header=False) 
+    print('Data Written to Log')
     resetStoredKeys()           
     #clear out dataframe
 
