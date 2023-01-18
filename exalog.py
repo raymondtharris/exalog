@@ -55,7 +55,8 @@ def onPress(key):
 
     global df
     #print('OG')
-    #print(df)    
+    #print(df)
+    # Need to add check for non alphanumerics    
     df = pd.concat([df,pd.DataFrame.from_dict(newLog)])
     #print('Combined')
     #print(df)
