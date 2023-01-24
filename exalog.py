@@ -2,16 +2,17 @@ from pynput import keyboard
 from PIL import ImageGrab
 from datetime import datetime
 from pathlib import Path
+import getpass
 import pandas as pd
 
 #bbox = (0, 0, screen_width, screen_height)
 currentCopy = ''
+currentuser = getpass.getuser()
 activePressedKeys = list()
 keyboardShortcuts = {
     'copy':[keyboard.Key.cmd, 'c'],
-    #'cmd': [keyboard.Key.cmd],
-    #'c keyc': ['c']
-    'paste': [keyboard.Key.cmd, 'v']
+    'paste': [keyboard.Key.cmd, 'v'],
+    'refresh':[keyboard.Key.cmd, 'r']
 }
 df = pd.DataFrame({'Keys': [], 'Type': [], 'Note': [], 'Media': []})
 
@@ -56,8 +57,13 @@ def onPress(key):
     global df
     #print('OG')
     #print(df)
-    # Need to add check for non alphanumerics    
-    df = pd.concat([df,pd.DataFrame.from_dict(newLog)])
+    # Need to add check for non alphanumerics
+    if newLog['Type']== 'Shortcut':
+        temp = pd.DataFrame(newLog, index=[0])
+        
+        df = pd.concat([df,temp])
+    else:    
+        df = pd.concat([df,pd.DataFrame.from_dict(newLog)])
     #print('Combined')
     #print(df)
     #If dataframe has more than 30 items write to file
