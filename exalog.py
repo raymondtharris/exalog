@@ -4,17 +4,43 @@ from datetime import datetime
 from pathlib import Path
 import getpass
 import pandas as pd
+import platform
+
+print(platform.system())
+currentPlatform = platform.system()
+keyboardShortcuts = {}
+if currentPlatform == "Darwin":
+    #print("macOS")
+    currentPlatform = "macOS"
+    keyboardShortcuts = {
+        'copy':[keyboard.Key.cmd, 'c'],
+        'paste': [keyboard.Key.cmd, 'v'],
+        'refresh':[keyboard.Key.cmd, 'r']
+    }
+elif currentPlatform == "Win32":
+    #print("Windows")
+    currentPlatform = "windows"
+    keyboardShortcuts = {
+        'copy':[keyboard.Key.ctrl, 'c'],
+        'paste': [keyboard.Key.ctrl, 'v'],
+        'refresh':[keyboard.Key.ctrl, 'r']
+    }
+elif currentPlatform == "Linux" or currentPlatform == "Linux2":
+    #print("Linux")
+    currentPlatform = "linux"
+    keyboardShortcuts = {
+        'copy':[keyboard.Key.ctrl, 'c'],
+        'paste': [keyboard.Key.ctrl, 'v'],
+        'refresh':[keyboard.Key.ctrl, 'r']
+    }
 
 #bbox = (0, 0, screen_width, screen_height)
 currentCopy = ''
 currentuser = getpass.getuser()
+print(currentuser)
 activePressedKeys = list()
-keyboardShortcuts = {
-    'copy':[keyboard.Key.cmd, 'c'],
-    'paste': [keyboard.Key.cmd, 'v'],
-    'refresh':[keyboard.Key.cmd, 'r']
-}
-df = pd.DataFrame({'Keys': [], 'Type': [], 'Note': [], 'Media': []})
+
+df = pd.DataFrame({'Keys': [], 'Type': [], 'Note': [], 'Media': [], 'Platform':[], 'User':[]})
 
 def onPress(key):
 
@@ -25,7 +51,7 @@ def onPress(key):
         #print('special key {0} pressed'.format(key))
         activePressedKeys.append(key)
 
-    newLog = {'Keys': activePressedKeys, 'Type': 'Alphanumeric', 'Note':'', 'Media': ''}
+    newLog = {'Keys': activePressedKeys, 'Type': 'Alphanumeric', 'Note':'', 'Media': '', 'Platform': currentPlatform, 'User': currentuser}
     if (keyboard.Key.cmd in activePressedKeys) | (keyboard.Key.alt in activePressedKeys) | (keyboard.Key.ctrl in activePressedKeys):
         for shortcut, shortcutKeys in keyboardShortcuts.items():
         #print(shortcut + ': ' + str(shortcutKeys) + ' <> ' + str(activePressedKeys))
@@ -81,7 +107,7 @@ def writeFile():
 
 def resetStoredKeys():
     global df
-    df = pd.DataFrame({'Keys': [], 'Type': [], 'Note': [], 'Media': []})
+    df = pd.DataFrame({'Keys': [], 'Type': [], 'Note': [], 'Media': [], 'Platform':[], 'User':[]})
             
 def onRelease(key):
     try:
